@@ -136,12 +136,12 @@ function renderPagination() {
     // Page input and Go button
     const pageInputLi = document.createElement('li');
     pageInputLi.classList.add('page-item', 'mx-2');
-    pageInputLi.innerHTML = '
+    pageInputLi.innerHTML = `
         <div class="input-group">
-            <input type="number" class="form-control text-center" id="page-number-input" value="' + currentPage + '" min="1" max="' + totalPages + '" style="width: 80px;">
+            <input type="number" class="form-control text-center" id="page-number-input" value="${currentPage}" min="1" max="${totalPages}" style="width: 80px;">
             <button class="btn btn-primary" type="button" id="go-to-page-btn">Go</button>
         </div>
-    ';
+    `;
     ul.appendChild(pageInputLi);
 
     // Current page / Total pages display

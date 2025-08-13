@@ -110,8 +110,9 @@ function renderPagination() {
         return; // No pagination needed for 1 or fewer pages
     }
 
+    const nav = document.createElement('nav');
     const ul = document.createElement('ul');
-    ul.classList.add('pagination', 'justify-content-center');
+    ul.classList.add('pagination', 'justify-content-center', 'align-items-center');
 
     // Previous button
     const prevLi = document.createElement('li');
@@ -132,24 +133,22 @@ function renderPagination() {
     prevLi.appendChild(prevLink);
     ul.appendChild(prevLi);
 
-    // Page numbers
-    for (let i = 1; i <= totalPages; i++) {
-        const li = document.createElement('li');
-        li.classList.add('page-item');
-        if (i === currentPage) li.classList.add('active');
-        const link = document.createElement('a');
-        link.classList.add('page-page-link');
-        link.href = '#';
-        link.textContent = i;
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            currentPage = i;
-            renderNotes();
-            renderPagination();
-        });
-        li.appendChild(link);
-        ul.appendChild(li);
-    }
+    // Page input and Go button
+    const pageInputLi = document.createElement('li');
+    pageInputLi.classList.add('page-item', 'mx-2');
+    pageInputLi.innerHTML = '
+        <div class="input-group">
+            <input type="number" class="form-control text-center" id="page-number-input" value="' + currentPage + '" min="1" max="' + totalPages + '" style="width: 80px;">
+            <button class="btn btn-primary" type="button" id="go-to-page-btn">Go</button>
+        </div>
+    ';
+    ul.appendChild(pageInputLi);
+
+    // Current page / Total pages display
+    const pageInfoLi = document.createElement('li');
+    pageInfoLi.classList.add('page-item', 'ms-2');
+    pageInfoLi.innerHTML = '<span class="page-link">Page ' + currentPage + ' of ' + totalPages + '</span>';
+    ul.appendChild(pageInfoLi);
 
     // Next button
     const nextLi = document.createElement('li');
@@ -170,7 +169,30 @@ function renderPagination() {
     nextLi.appendChild(nextLink);
     ul.appendChild(nextLi);
 
-    paginationContainer.appendChild(ul);
+    nav.appendChild(ul);
+    paginationContainer.appendChild(nav);
+
+    // Add event listener for the Go button
+    document.getElementById('go-to-page-btn').addEventListener('click', () => {
+        const inputPage = parseInt(document.getElementById('page-number-input').value);
+        if (inputPage >= 1 && inputPage <= totalPages) {
+            currentPage = inputPage;
+            renderNotes();
+            renderPagination();
+        }
+    });
+
+    // Add event listener for Enter key on the input field
+    document.getElementById('page-number-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const inputPage = parseInt(document.getElementById('page-number-input').value);
+            if (inputPage >= 1 && inputPage <= totalPages) {
+                currentPage = inputPage;
+                renderNotes();
+                renderPagination();
+            }
+        }
+    });
 }
 
 // Initial fetch and display
